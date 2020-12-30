@@ -1,0 +1,21 @@
+server:
+  port: 8282
+
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/jpashop;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    
+  jpa:
+    hibernate:
+      # application 실행시점에 내가 가지고 있는 가지고 있는 엔티티를 삭제학고, 재생성하는 옵션      ddl-auto: create   
+    properties:      hibernate:
+        # System.out.println()으로 로그를 찍는 개념이라 불필요함
+        showsql:true  
+        format_sql:true
+
+logging:  level:    org.hibernate.SQL: debug # hibernate & JPA가 남기는 sql를 볼수 있게 찍어줌(Logger 개념)
+    org.hibernate.type: trace
+    
