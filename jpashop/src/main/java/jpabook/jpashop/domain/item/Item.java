@@ -1,12 +1,19 @@
 package jpabook.jpashop.domain.item;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
 
+import jpabook.jpashop.domain.Category;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter @Setter
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)// InheritanceTypeÀº ÃÑ 3°¡Áö Å¸ÀÔÀÌ ÀÖÀ½ : SINGLE_TABLE, TABLE_PER_CLASS, JOINED */
+@DiscriminatorColumn(name="dtype")
+@Getter
+@Setter
 public abstract class Item { // ±¸ÇöÃ¼¸¦ µû·Î °¡Áö¹Ç·Î Ãß»óÅ¬·¡½º·Î ¼±¾ğÇØÁÜ(±¸ÇöÃ¼µé°ú´Â »ó¼Ó°ü°è mappingÀ» ÇØÁà¾ßÇÔ)
 	
 	@Id @GeneratedValue
@@ -18,4 +25,7 @@ public abstract class Item { // ±¸ÇöÃ¼¸¦ µû·Î °¡Áö¹Ç·Î Ãß»óÅ¬·¡½º·Î ¼±¾ğÇØÁÜ(±¸Ç
 	private int price;
 	
 	private int stockQuantity;
+
+	@ManyToMany(mappedBy="items")
+	private List<Category> categories = new ArrayList<>();
 }
