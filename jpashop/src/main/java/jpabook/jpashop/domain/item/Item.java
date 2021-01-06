@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import jpabook.jpashop.domain.Category;
+import jpabook.jpashop.exception.NotEnoughStockException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,4 +29,27 @@ public abstract class Item { // ±¸ÇöÃ¼¸¦ µû·Î °¡Áö¹Ç·Î Ãß»óÅ¬·¡½º·Î ¼±¾ğÇØÁÜ(±¸Ç
 
 	@ManyToMany(mappedBy="items")
 	private List<Category> categories = new ArrayList<>();
+	
+	/* ºñÁî´Ï½º ·ÎÁ÷ : stock Áõ°¡ */
+	public void addStock(int quantity) {
+		this.stockQuantity += quantity;
+	}
+	
+	/* ºñÁî´Ï½º ·ÎÁ÷ : stock °¨¼Ò */
+	public void removeStock(int quantity) {
+		 int restStock = this.stockQuantity - quantity;
+		 if (restStock < 0) {
+			 throw new NotEnoughStockException("need more stock");
+		 }
+		 this.stockQuantity = restStock;
+	}
+	
 }
+
+
+
+
+
+
+
+

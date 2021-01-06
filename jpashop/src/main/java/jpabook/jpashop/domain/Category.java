@@ -25,7 +25,7 @@ public class Category {
 	// Category와 List간에 다대다 관계 설정
 	// 관계형DB는 collection관계를 양쪽에다 가질수 없음(일대다 다대일로 풀어낼수 있는 중간 매개역할의 table을 추가해줘야함)
 	@ManyToMany	
-	@JoinTable(name="catagory_item",
+	@JoinTable(name="category_item",
 	           joinColumns = @JoinColumn(name="category_id"),
 	           inverseJoinColumns=@JoinColumn(name="item_id")) 
 	private List<Item> items = new ArrayList<>();
