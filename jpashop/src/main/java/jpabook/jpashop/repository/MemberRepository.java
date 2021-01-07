@@ -2,6 +2,8 @@ package jpabook.jpashop.repository;
 
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
 import org.springframework.stereotype.Repository;
 import jpabook.jpashop.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,9 @@ public class MemberRepository {
 	
 	/* Name으로 Member를 Search하는 메서드 */
 	public List<Member> findByName(String name){
-		List<Member> result = em.createQuery("select m from Member m where m.name = :name", Member.class).setParameter("name",name).getResultList();
+		TypedQuery<Member> query = em.createQuery("select m from Member m where m.name = :name", Member.class);
+		query.setParameter("name", name);
+		List<Member> result = query.getResultList();
 		return result;
 	}
 }

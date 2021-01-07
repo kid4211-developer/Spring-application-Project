@@ -18,12 +18,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name="orders") // table을 지정해줌
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 	@Id @GeneratedValue
 	@Column(name="order_id") // Column명 : tableName_id
@@ -62,4 +65,48 @@ public class Order {
 		delivery.setOrder(this);
 	}
 	
+	/* 생성 메서드 - 주문 생성
+	 * 주문에 대한 상태값 셋팅을 하고 Order 객체를 반환해줌
+	 */
+	public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) { //OrderItem은 List로 넘기게 되는데 여러개일수 있으니 orderItems로 명명)
+		Order order = new Order();
+		order.setMember(member);
+		order.setDelivery(delivery);
+		for(OrderItem orderItem : orderItems) {
+			order.addOrderItem(orderItem);
+		}
+		order.setStatus(OrderStatus.ORDER); //Order의 상태를 우선 ORDER로 강제해놓음
+		order.setOrderDate(LocalDateTime.now());
+		return order;
+	}
+	
+	/* 비지니스 로직 - 주문 취소 */
+	public void cancel() {
+		if (delivery.getStatus() == DeliveryStatus.COMP) {
+			throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
+		}
+		this.setStatus(OrderStatus.CANCEL); //배송이 완료된 상품이 아니라면 주문상태를 취소로 변경해줌
+		for(OrderItem orderItem : orderItems) { //반복문을 통해 각 주문 item의 재고를 원상복구 시켜줌
+			orderItem.cancel(); //주문에 해당하는 orderItem도 각각 취소 해줘야하기 때문에 OrderItem에도 cancel기능의 비지니스 로직을 추가해줌 
+		}
+	}
+	
+	/* 조회 로직 - 전체 주문 금액 조회 */
+	public int getTotalPrice() {
+		int totalPrice = 0;
+		for(OrderItem orderItem : orderItems) {
+			totalPrice += orderItem.getTotalPrice();
+		}
+		return totalPrice;
+	}
 }
+
+
+
+
+
+
+
+
+
+
